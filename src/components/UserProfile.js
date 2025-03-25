@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase-config";
-import { useAuth } from "../AuthContext";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../firebase-config"; // Firebase configuration
+import { useAuth } from "../AuthContext"; // Authentication context
 
 function UserProfile() {
   const { currentUser } = useAuth(); // Get the current logged-in user
-  const [profile, setProfile] = useState({}); // Store user profile data
+  const [profile, setProfile] = useState({}); // State for user profile data
   const [editing, setEditing] = useState(false); // Toggle edit mode
   const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(""); // Error message
@@ -14,17 +14,22 @@ function UserProfile() {
     const fetchProfile = async () => {
       try {
         setLoading(true);
+        console.log("Fetching profile for user ID:", currentUser?.uid);
+
+        // Firestore document reference
         const docRef = doc(db, "users", currentUser.uid);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
+          console.log("Profile data found:", docSnap.data());
           setProfile(docSnap.data());
         } else {
-          console.log("No profile found!");
+          console.log("No profile document found for this user.");
+          setError("Profile not found.");
         }
       } catch (err) {
-        console.error("Error fetching profile:", err);
-        setError("Failed to load your profile.");
+        console.error("Error fetching profile:", err.message);
+        setError("Failed to load your profile. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -39,13 +44,18 @@ function UserProfile() {
     e.preventDefault();
     try {
       setLoading(true);
+      console.log("Updating profile for user ID:", currentUser?.uid);
+
+      // Firestore document reference
       const docRef = doc(db, "users", currentUser.uid);
-      await updateDoc(docRef, profile);
+
+      // Update or create the profile document
+      await setDoc(docRef, profile, { merge: true });
       alert("Profile updated successfully!");
       setEditing(false);
     } catch (err) {
-      console.error("Error updating profile:", err);
-      setError("Failed to update your profile.");
+      console.error("Error updating profile:", err.message);
+      setError(`Failed to update your profile: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -72,6 +82,7 @@ function UserProfile() {
               value={profile.name || ""}
               onChange={handleChange}
               disabled={!editing}
+              required
             />
           </div>
           <div>
@@ -82,6 +93,7 @@ function UserProfile() {
               value={profile.email || ""}
               onChange={handleChange}
               disabled={!editing}
+              required
             />
           </div>
           <div>
