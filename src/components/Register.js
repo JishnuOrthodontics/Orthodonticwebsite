@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import app from "../firebase-config"; // Import the initialized Firebase App
 
 function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const auth = getAuth();
+  const [email, setEmail] = useState(""); // State for user email
+  const [password, setPassword] = useState(""); // State for user password
+  const auth = getAuth(app); // Get the authentication instance
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log("User registered:", userCredential.user);
-      })
-      .catch((error) => {
-        console.error("Error registering:", error.message);
-      });
+  const handleRegister = async (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("User registered:", userCredential.user); // Log the successfully registered user
+      alert("Registration successful!");
+    } catch (error) {
+      console.error("Error registering:", error.message); // Log registration error
+      alert(`Registration failed: ${error.message}`);
+    }
   };
 
   return (
