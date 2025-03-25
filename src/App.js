@@ -8,7 +8,6 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-
 function App() {
   return (
     <Router>
