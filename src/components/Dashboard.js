@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth } from "../AuthContext";
+import AppointmentForm from "./AppointmentForm";
 
 function Dashboard() {
   const { currentUser } = useAuth(); // Get the current logged-in user
@@ -10,7 +11,7 @@ function Dashboard() {
       {currentUser ? (
         <div>
           <p>Email: {currentUser.email}</p>
-          <p>Here you can view your appointments and updates.</p>
+          <AppointmentForm />
         </div>
       ) : (
         <p>Please log in to see your dashboard.</p>

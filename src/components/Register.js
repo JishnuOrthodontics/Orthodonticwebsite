@@ -1,6 +1,6 @@
 import React, { useState } from "react";
+import { app } from "../firebase-config"; // Use named import for app
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import app from "../firebase-config"; // Import the initialized Firebase App
 
 function Register() {
   const [email, setEmail] = useState(""); // State for user email
