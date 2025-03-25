@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
+import Dashboard from "./components/Dashboard";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Login from "./components/Login";
@@ -14,6 +15,7 @@ function App() {
       <nav>
         <ul>
           <li><Link to="/">Home</Link></li>
+          <li><Link to="/dashboard">Dashboard</Link></li>
           <li><Link to="/about">About</Link></li>
           <li><Link to="/contact">Contact</Link></li>
           <li><Link to="/register">Register</Link></li>
@@ -22,6 +24,7 @@ function App() {
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
         <Route path="/about" element={<ProtectedRoute> <About /> </ProtectedRoute>} />
         <Route path="/contact" element={<ProtectedRoute> <Contact /> </ProtectedRoute>} />
         <Route path="/login" element={<Login />} />
