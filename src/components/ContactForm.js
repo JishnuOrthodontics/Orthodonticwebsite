@@ -1,40 +1,91 @@
-import React, { useRef } from "react";
-import emailjs from "@emailjs/browser";
+import React, { useState, useRef } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebase-config"; // Firebase configuration
+import emailjs from "@emailjs/browser"; // EmailJS integration
 
 function ContactForm() {
-  const form = useRef();
+  const [name, setName] = useState(""); // State for user's name
+  const [email, setEmail] = useState(""); // State for user's email
+  const [message, setMessage] = useState(""); // State for user's message
+  const [loading, setLoading] = useState(false); // State to track loading status
+  const [error, setError] = useState(""); // State to track error messages
+  const form = useRef(); // Reference for the form (for EmailJS)
 
-  const sendEmail = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+    setLoading(true); // Enable loading state
+    setError(""); // Clear any previous errors
 
-    emailjs.sendForm(
-      "YOUR_SERVICE_ID", // Replace with your EmailJS Service ID
-      "YOUR_TEMPLATE_ID", // Replace with your EmailJS Template ID
-      form.current,
-      "YOUR_PUBLIC_KEY" // Replace with your EmailJS Public Key
-    )
-    .then((result) => {
-      console.log("Email sent:", result.text);
+    try {
+      // Save the message to Firestore
+      await addDoc(collection(db, "messages"), {
+        name,
+        email,
+        message,
+        timestamp: new Date(),
+      });
+
+      // Send email using EmailJS
+      await emailjs.sendForm(
+        "service_eydmfct", // Replace with your EmailJS Service ID
+        "template_vjgpae9", // Replace with your EmailJS Template ID
+        form.current,
+        "PT5nrirjVsFXmkyvL" // Replace with your EmailJS Public Key
+      );
+
       alert("Your message has been sent successfully!");
-    }, (error) => {
-      console.error("Error sending email:", error.text);
-      alert("Failed to send the message. Please try again.");
-    });
-
-    e.target.reset();
+      setName(""); // Reset the name field
+      setEmail(""); // Reset the email field
+      setMessage(""); // Reset the message field
+    } catch (err) {
+      console.error("Error sending message:", err);
+      setError("Failed to send your message. Please try again.");
+    } finally {
+      setLoading(false); // Disable loading state
+    }
   };
 
   return (
     <div>
       <h2>Contact Us</h2>
-      <form ref={form} onSubmit={sendEmail}>
-        <input type="text" name="user_name" placeholder="Your Name" required />
+      {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error messages */}
+      <form ref={form} onSubmit={handleSubmit}>
+        {/* Name Field */}
+        <input
+          type="text"
+          name="user_name"
+          placeholder="Your Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
         <br />
-        <input type="email" name="user_email" placeholder="Your Email" required />
+
+        {/* Email Field */}
+        <input
+          type="email"
+          name="user_email"
+          placeholder="Your Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
         <br />
-        <textarea name="message" placeholder="Your Message" required></textarea>
+
+        {/* Message Field */}
+        <textarea
+          name="message"
+          placeholder="Your Message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          required
+        ></textarea>
         <br />
-        <button type="submit">Send</button>
+
+        {/* Submit Button */}
+        <button type="submit" disabled={loading}>
+          {loading ? "Sending..." : "Send"}
+        </button>
       </form>
     </div>
   );
