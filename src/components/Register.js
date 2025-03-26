@@ -1,49 +1,55 @@
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
-import { auth, db } from "../firebase-config"; // Ensure firebase-config is correctly configured
+import { auth, db } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
-  const [email, setEmail] = useState(""); // State for email
-  const [password, setPassword] = useState(""); // State for password
-  const [role, setRole] = useState("patient"); // Default role is 'patient'
-  const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState(""); // Error state
-  const navigate = useNavigate(); // Hook for navigation
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("patient"); // Default role is "patient"
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    setLoading(true); // Set loading state to true
-    setError(""); // Reset error state
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
-      // Create user with email and password using Firebase Authentication
+      // Create user with Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Save user details (email and role) in Firestore
+      // Save user role to Firestore
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
-        role: role, // Assign role based on selection (doctor or patient)
+        role: role, // Save role as either "doctor" or "patient"
       });
 
       alert("Registration successful!");
-      navigate("/login"); // Redirect user to the login page after registration
+
+      // Redirect based on role
+      if (role === "patient") {
+        navigate("/medical-history"); // Navigate to Medical History if the role is "patient"
+      } else if (role === "doctor") {
+        navigate("/doctor-dashboard"); // Navigate to Doctor Dashboard if the role is "doctor"
+      }
     } catch (err) {
       console.error("Error during registration:", err.message);
-      setError("Failed to register: " + err.message); // Display error message to the user
+      setError("Failed to register: " + err.message);
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false);
     }
   };
 
   return (
     <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
       <h2>Register</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error messages */}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleRegister}>
-        <div style={{ marginBottom: "10px" }}>
+        <div>
           <label>Email:</label>
           <input
             type="email"
@@ -54,7 +60,7 @@ function Register() {
             style={{ width: "100%", padding: "8px" }}
           />
         </div>
-        <div style={{ marginBottom: "10px" }}>
+        <div>
           <label>Password:</label>
           <input
             type="password"
@@ -65,7 +71,7 @@ function Register() {
             style={{ width: "100%", padding: "8px" }}
           />
         </div>
-        <div style={{ marginBottom: "10px" }}>
+        <div>
           <label>Role:</label>
           <select
             value={role}
