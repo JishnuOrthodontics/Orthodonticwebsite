@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
+import { Card, CardContent, Typography, Button, CircularProgress } from "@mui/material";
 
 function DoctorDashboard() {
   const [appointments, setAppointments] = useState([]); // Store all appointments
-  const [selectedPatientId, setSelectedPatientId] = useState(null); // Track selected patient ID
+  const [selectedPatientId, setSelectedPatientId] = useState(null); // Currently selected patient ID
   const [filteredAppointments, setFilteredAppointments] = useState([]); // Filtered appointments for selected patient
   const [medicalHistory, setMedicalHistory] = useState(null); // Medical history for selected patient
   const [loadingHistory, setLoadingHistory] = useState(false); // Loading state for medical history
-  const [loading, setLoading] = useState(false); // General loading state for appointments/actions
+  const [loading, setLoading] = useState(false); // General loading state
 
   // Fetch all appointments when the component mounts
   useEffect(() => {
@@ -84,77 +85,66 @@ function DoctorDashboard() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Doctor Dashboard</h2>
+      <Typography variant="h4" gutterBottom>
+        Doctor Dashboard
+      </Typography>
 
       {/* Loading Feedback */}
-      {loading && <p>Loading data, please wait...</p>}
+      {loading && <CircularProgress />}
 
       {/* Appointment List */}
-      <div>
-        <h3>Your Appointments</h3>
+      <div style={{ marginTop: "20px" }}>
+        <Typography variant="h6">Your Appointments</Typography>
         {appointments.length > 0 ? (
-          <ul>
-            {appointments.map((appointment) => (
-              <li key={appointment.id} style={{ marginBottom: "15px" }}>
-                <strong>Patient Name:</strong> {appointment.name} <br />
-                <strong>Date:</strong> {appointment.date} <br />
-                <strong>Time:</strong> {appointment.time} <br />
-                <strong>Status:</strong> {appointment.status} <br />
-                <button
+          appointments.map((appointment) => (
+            <Card key={appointment.id} style={{ marginBottom: "15px" }}>
+              <CardContent>
+                <Typography variant="subtitle1"><strong>Patient Name:</strong> {appointment.name}</Typography>
+                <Typography variant="subtitle2"><strong>Date:</strong> {appointment.date}</Typography>
+                <Typography variant="subtitle2"><strong>Time:</strong> {appointment.time}</Typography>
+                <Typography variant="subtitle2"><strong>Status:</strong> {appointment.status}</Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  style={{ marginRight: "10px", marginTop: "10px" }}
                   onClick={() => handlePatientSelection(appointment.userId)}
-                  style={{
-                    marginTop: "10px",
-                    padding: "5px 10px",
-                    backgroundColor: "blue",
-                    color: "white",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
                 >
                   View Patient Details
-                </button>
+                </Button>
                 {appointment.status === "Pending" && (
-                  <button
+                  <Button
+                    variant="contained"
+                    color="success"
+                    size="small"
+                    style={{ marginRight: "10px" }}
                     onClick={() => updateAppointmentStatus(appointment.id, "Confirmed")}
-                    style={{
-                      marginLeft: "10px",
-                      padding: "5px 10px",
-                      backgroundColor: "green",
-                      color: "white",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
                   >
                     Confirm
-                  </button>
+                  </Button>
                 )}
                 {appointment.status === "Confirmed" && (
-                  <button
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    size="small"
                     onClick={() => updateAppointmentStatus(appointment.id, "Completed")}
-                    style={{
-                      marginLeft: "10px",
-                      padding: "5px 10px",
-                      backgroundColor: "gray",
-                      color: "white",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
                   >
                     Mark as Completed
-                  </button>
+                  </Button>
                 )}
-              </li>
-            ))}
-          </ul>
+              </CardContent>
+            </Card>
+          ))
         ) : (
-          <p>No appointments found.</p>
+          <Typography>No appointments found.</Typography>
         )}
       </div>
 
       {/* Filtered Appointments Section */}
       {selectedPatientId && filteredAppointments.length > 0 && (
         <div style={{ marginTop: "20px" }}>
-          <h3>Appointments for Selected Patient</h3>
+          <Typography variant="h6">Filtered Appointments for Selected Patient</Typography>
           <ul>
             {filteredAppointments.map((appointment) => (
               <li key={appointment.id} style={{ marginBottom: "10px" }}>
@@ -167,19 +157,17 @@ function DoctorDashboard() {
       )}
 
       {/* Medical History Section */}
-      {loadingHistory && <p>Loading medical history...</p>}
+      {loadingHistory && <CircularProgress />}
       {medicalHistory && (
         <div style={{ marginTop: "20px" }}>
-          <h3>Patient Medical History</h3>
-          <p><strong>Full Name:</strong> {medicalHistory.fullName}</p>
-          <p><strong>Date of Birth:</strong> {medicalHistory.dateOfBirth}</p>
-          <p><strong>Medical Conditions:</strong> {medicalHistory.medicalConditions}</p>
-          <p><strong>Allergies:</strong> {medicalHistory.allergies}</p>
-          <p><strong>Current Medications:</strong> {medicalHistory.medications}</p>
-          <p><strong>Dental Issues:</strong> {medicalHistory.dentalIssues}</p>
-          <p><strong>Past Treatments:</strong> {medicalHistory.pastTreatments}</p>
-          <p><strong>Oral Hygiene Routine:</strong> {medicalHistory.oralHygiene}</p>
-          <p><strong>Lifestyle Habits:</strong> {medicalHistory.lifestyleHabits}</p>
+          <Typography variant="h6">Patient Medical History</Typography>
+          <Typography><strong>Full Name:</strong> {medicalHistory.fullName}</Typography>
+          <Typography><strong>Date of Birth:</strong> {medicalHistory.dateOfBirth}</Typography>
+          <Typography><strong>Medical Conditions:</strong> {medicalHistory.medicalConditions}</Typography>
+          <Typography><strong>Allergies:</strong> {medicalHistory.allergies}</Typography>
+          <Typography><strong>Current Medications:</strong> {medicalHistory.medications}</Typography>
+          <Typography><strong>Dental Issues:</strong> {medicalHistory.dentalIssues}</Typography>
+          <Typography><strong>Past Treatments:</strong> {medicalHistory.pastTreatments}</Typography>
         </div>
       )}
     </div>
