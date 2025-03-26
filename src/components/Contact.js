@@ -1,6 +1,9 @@
 import React from "react";
-import { Container, Grid, Typography, Button, Card, CardContent } from "@mui/material";
+import { Container, Grid, Typography, Card, CardContent } from "@mui/material";
 import ContactForm from "../components/ContactForm";
+import SatisfactionRating from "../components/SatisfactionRating";
+import SuggestionForm from "../components/SuggestionForm";
+import SupportDesk from "../components/SupportDesk";
 
 function Contact() {
   return (
@@ -10,62 +13,74 @@ function Contact() {
         style={{
           textAlign: "center",
           padding: "50px",
-          background: "linear-gradient(90deg, #2196f3, #1976d2)",
+          background: "linear-gradient(90deg, #4caf50, #388e3c)",
           color: "white",
           borderRadius: "15px",
+          marginBottom: "40px",
         }}
       >
         <Typography variant="h3" gutterBottom>
           Contact Us
         </Typography>
-        <Typography variant="h6" gutterBottom>
-          Have a question or need support? We’re here to help!
+        <Typography variant="h6">
+          Reach out for support, share your ideas, or let us know how we’re doing!
         </Typography>
       </div>
 
       {/* Contact Information Section */}
-      <div style={{ marginTop: "50px" }}>
-        <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>
-          Get in Touch
-        </Typography>
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Phone</Typography>
-                <Typography variant="body2">+91 7907504639</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Email</Typography>
-                <Typography variant="body2">dr.jishnu.ortho@gmail.com</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Address</Typography>
-                <Typography variant="body2">
-                  Sreeragam Aroor.P.O, Alappuzha
-                  <br />
-                  Kerala State, India.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+      <Grid container spacing={4} style={{ marginBottom: "40px" }}>
+        <Grid item xs={12} md={4}>
+          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
+            <CardContent>
+              <Typography variant="h6">Phone</Typography>
+              <Typography variant="body2">+91 7907504639</Typography>
+            </CardContent>
+          </Card>
         </Grid>
-      </div>
+        <Grid item xs={12} md={4}>
+          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
+            <CardContent>
+              <Typography variant="h6">Email</Typography>
+              <Typography variant="body2">dr.jishnu.ortho@gmail.com</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
+            <CardContent>
+              <Typography variant="h6">Address</Typography>
+              <Typography variant="body2">
+                Sreeragam Aroor.P.O, Alappuzha
+                <br />
+                Kerala State, India.
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Feedback and Suggestions Section */}
+      <Grid container spacing={4} style={{ marginBottom: "40px" }}>
+        <Grid item xs={12} md={6}>
+          <Typography variant="h4" gutterBottom>
+            Are You Satisfied?
+          </Typography>
+          <SatisfactionRating />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Typography variant="h4" gutterBottom>
+            Share Your Suggestions
+          </Typography>
+          <SuggestionForm />
+        </Grid>
+      </Grid>
 
       {/* Contact Form Section */}
-      <div style={{ marginTop: "50px" }}>
-        <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>
+      <div style={{ marginBottom: "40px" }}>
+        <Typography variant="h4" gutterBottom>
           Send Us a Message
         </Typography>
-        <Typography variant="body1" style={{ textAlign: "center", marginBottom: "20px" }}>
+        <Typography variant="body1" gutterBottom>
           Fill out the form below, and we’ll get back to you as soon as possible.
         </Typography>
         <div
@@ -78,16 +93,15 @@ function Contact() {
             boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
           }}
         >
-          <ContactForm /> {/* Embed the ContactForm component here */}
+          <ContactForm />
         </div>
       </div>
 
-      {/* Call to Action Section */}
+      {/* 24/7 Support Section */}
       <div
         style={{
-          marginTop: "50px",
           padding: "30px",
-          background: "linear-gradient(90deg, #4caf50, #2e7d32)",
+          background: "linear-gradient(90deg, #ff9800, #f57c00)",
           color: "white",
           borderRadius: "15px",
           textAlign: "center",
@@ -96,9 +110,7 @@ function Contact() {
         <Typography variant="h4" gutterBottom>
           Need Immediate Assistance?
         </Typography>
-        <Button variant="contained" color="secondary" size="large">
-          Call Us Now
-        </Button>
+        <SupportDesk />
       </div>
     </Container>
   );
