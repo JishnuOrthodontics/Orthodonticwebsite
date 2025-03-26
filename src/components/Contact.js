@@ -27,38 +27,6 @@ function Contact() {
         </Typography>
       </div>
 
-      {/* Contact Information Section */}
-      <Grid container spacing={4} style={{ marginBottom: "40px" }}>
-        <Grid item xs={12} md={4}>
-          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
-            <CardContent>
-              <Typography variant="h6">Phone</Typography>
-              <Typography variant="body2">+91 7907504639</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
-            <CardContent>
-              <Typography variant="h6">Email</Typography>
-              <Typography variant="body2">dr.jishnu.ortho@gmail.com</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
-            <CardContent>
-              <Typography variant="h6">Address</Typography>
-              <Typography variant="body2">
-                Sreeragam Aroor.P.O, Alappuzha
-                <br />
-                Kerala State, India.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
       {/* Feedback and Suggestions Section */}
       <Grid container spacing={4} style={{ marginBottom: "40px" }}>
         <Grid item xs={12} md={6}>
@@ -112,6 +80,38 @@ function Contact() {
         </Typography>
         <SupportDesk />
       </div>
+      
+      {/* Contact Information Section */}
+      <Grid container spacing={4} style={{ marginBottom: "40px" }}>
+        <Grid item xs={12} md={4}>
+          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
+            <CardContent>
+              <Typography variant="h6">Phone</Typography>
+              <Typography variant="body2">+91 7907504639</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
+            <CardContent>
+              <Typography variant="h6">Email</Typography>
+              <Typography variant="body2">dr.jishnu.ortho@gmail.com</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
+            <CardContent>
+              <Typography variant="h6">Address</Typography>
+              <Typography variant="body2">
+                Sreeragam Aroor.P.O, Alappuzha
+                <br />
+                Kerala State, India.
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
     </Container>
   );
 }
