@@ -16,7 +16,7 @@ function Home() {
         }}
       >
         <Typography variant="h3" gutterBottom>
-          Welcome to HealthConnect
+          Welcome to Orthodontic Corp
         </Typography>
         <Typography variant="h6" gutterBottom>
           Empowering Doctors. Assisting Patients. Together, we redefine healthcare.
@@ -80,7 +80,7 @@ function Home() {
       {/* Features Highlight Section */}
       <div style={{ marginTop: "50px" }}>
         <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>
-          Why Choose HealthConnect?
+          Why Choose Ortho Corp?
         </Typography>
         <Grid container spacing={4} style={{ marginTop: "20px" }}>
           <Grid item xs={12} md={4}>
@@ -120,7 +120,7 @@ function Home() {
           borderTop: "1px solid #ddd",
         }}
       >
-        <Typography variant="body2">© 2025 HealthConnect. All rights reserved.</Typography>
+        <Typography variant="body2">© 2025 Orthodontic Corp. All rights reserved.</Typography>
       </div>
     </Container>
   );

@@ -19,7 +19,7 @@ function FeaturesPage() {
           Explore Our Features for Patients
         </Typography>
         <Typography variant="h6" gutterBottom>
-          Discover how HealthConnect helps you manage your healthcare effortlessly.
+          Discover how OrthoCorp helps you manage your healthcare effortlessly.
         </Typography>
       </div>
 
