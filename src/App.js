@@ -12,6 +12,7 @@ import Register from "./components/Register";
 import DoctorDashboard from "./components/DoctorDashboard";
 import PatientDashboard from "./components/PatientDashboard";
 import MedicalHistory from "./components/MedicalHistory";
+import FeaturesPage from "./components/FeaturesPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -85,7 +86,7 @@ function App() {
         <Route path="/login" element={!user ? <Login /> : <Navigate to={`/${role}-dashboard`} />} />
         <Route path="/register" element={<Register />} />
         <Route path="/medical-history" element={<MedicalHistory />} />
-
+        <Route path="/features" element={<FeaturesPage />} />
         {/* Role-Based Routes */}
         <Route
           path="/doctor-dashboard"

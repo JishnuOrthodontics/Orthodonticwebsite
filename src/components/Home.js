@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Grid, Typography, Button, Card, CardContent } from "@mui/material";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 function Home() {
   return (
@@ -12,23 +13,10 @@ function Home() {
           background: "linear-gradient(90deg, #007bff, #0056b3)",
           color: "white",
           borderRadius: "15px",
-          position: "relative",
         }}
       >
-        <img
-          src="your-image-url-or-path-here" // Replace with the actual image path or URL
-          alt="Healthcare Platform"
-          style={{
-            position: "absolute",
-            top: "10px",
-            right: "10px",
-            maxHeight: "120px",
-            borderRadius: "10px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
-          }}
-        />
         <Typography variant="h3" gutterBottom>
-          Welcome to Orthodontic Corp
+          Welcome to HealthConnect
         </Typography>
         <Typography variant="h6" gutterBottom>
           Empowering Doctors. Assisting Patients. Together, we redefine healthcare.
@@ -54,7 +42,13 @@ function Home() {
               <Typography variant="body1" gutterBottom>
                 Easily book appointments, manage your health records, and connect with the best doctors.
               </Typography>
-              <Button variant="contained" color="primary">
+              <Button
+                variant="contained"
+                color="primary"
+                component={Link}
+                to="/features"
+                style={{ textDecoration: "none", color: "white" }}
+                >
                 Explore Features
               </Button>
             </CardContent>
@@ -69,7 +63,13 @@ function Home() {
               <Typography variant="body1" gutterBottom>
                 Manage your appointments, view medical histories, and grow your practice seamlessly.
               </Typography>
-              <Button variant="contained" color="primary">
+              <Button
+                variant="contained"
+                color="primary"
+                component={Link}
+                to="/login"
+                style={{ textDecoration: "none", color: "white" }} // Functional Join Now button
+              >
                 Join Now
               </Button>
             </CardContent>
@@ -80,7 +80,7 @@ function Home() {
       {/* Features Highlight Section */}
       <div style={{ marginTop: "50px" }}>
         <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>
-          Why Choose Orthodontic Corp?
+          Why Choose HealthConnect?
         </Typography>
         <Grid container spacing={4} style={{ marginTop: "20px" }}>
           <Grid item xs={12} md={4}>
@@ -110,19 +110,6 @@ function Home() {
         </Grid>
       </div>
 
-      {/* Testimonials Section */}
-      <div style={{ marginTop: "50px", textAlign: "center" }}>
-        <Typography variant="h4" gutterBottom>
-          What Our Users Say
-        </Typography>
-        <Typography variant="body1">
-          "This page has made managing my appointments a breeze!" – A Satisfied Patient
-        </Typography>
-        <Typography variant="body1">
-          "I can now focus more on patient care and less on admin work." – A Happy Doctor
-        </Typography>
-      </div>
-
       {/* Footer */}
       <div
         style={{
@@ -133,7 +120,7 @@ function Home() {
           borderTop: "1px solid #ddd",
         }}
       >
-        <Typography variant="body2">© 2025 Orthodontic Corp. All rights reserved.</Typography>
+        <Typography variant="body2">© 2025 HealthConnect. All rights reserved.</Typography>
       </div>
     </Container>
   );
