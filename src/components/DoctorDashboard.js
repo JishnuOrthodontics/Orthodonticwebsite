@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
 
 function DoctorDashboard() {
-  const [appointments, setAppointments] = useState([]); // All appointments
+  const [appointments, setAppointments] = useState([]); // Store all appointments
   const [selectedPatientId, setSelectedPatientId] = useState(null); // Track selected patient ID
-  const [filteredAppointments, setFilteredAppointments] = useState([]); // Filtered appointments
-  const [medicalHistory, setMedicalHistory] = useState(null); // Medical history of a selected patient
-  const [loadingHistory, setLoadingHistory] = useState(false); // Loading state for fetching history
+  const [filteredAppointments, setFilteredAppointments] = useState([]); // Filtered appointments for selected patient
+  const [medicalHistory, setMedicalHistory] = useState(null); // Medical history for selected patient
+  const [loadingHistory, setLoadingHistory] = useState(false); // Loading state for medical history
+  const [loading, setLoading] = useState(false); // General loading state for appointments/actions
 
-  // Fetch all appointments when the component loads
+  // Fetch all appointments when the component mounts
   useEffect(() => {
     const fetchAppointments = async () => {
+      setLoading(true); // Start loading
       try {
         const querySnapshot = await getDocs(collection(db, "appointments"));
         const fetchedAppointments = querySnapshot.docs.map((doc) => ({
@@ -21,17 +23,18 @@ function DoctorDashboard() {
         setAppointments(fetchedAppointments);
       } catch (err) {
         console.error("Error fetching appointments:", err.message);
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
     fetchAppointments();
   }, []);
 
-  // Fetch the selected patient's medical history
+  // Fetch medical history for the selected patient
   const fetchMedicalHistory = async (patientId) => {
-    setLoadingHistory(true);
+    setLoadingHistory(true); // Start loading medical history
     setMedicalHistory(null); // Clear previous history
-
     try {
       const docRef = doc(db, "medicalHistories", patientId);
       const docSnap = await getDoc(docRef);
@@ -44,21 +47,47 @@ function DoctorDashboard() {
     } catch (err) {
       console.error("Error fetching medical history:", err.message);
     } finally {
-      setLoadingHistory(false);
+      setLoadingHistory(false); // Stop loading medical history
     }
   };
 
-  // Handle selection of a patient
+  // Handle patient selection and fetch appointments/medical history
   const handlePatientSelection = (patientId) => {
-    setSelectedPatientId(patientId); // Set the selected patient ID
+    setSelectedPatientId(patientId);
     const filtered = appointments.filter((appointment) => appointment.userId === patientId);
-    setFilteredAppointments(filtered); // Update filtered appointments
-    fetchMedicalHistory(patientId); // Fetch medical history for the selected patient
+    setFilteredAppointments(filtered); // Set filtered appointments
+    fetchMedicalHistory(patientId); // Fetch medical history
+  };
+
+  // Update appointment status
+  const updateAppointmentStatus = async (appointmentId, newStatus) => {
+    setLoading(true); // Start loading
+    try {
+      const appointmentRef = doc(db, "appointments", appointmentId);
+      await updateDoc(appointmentRef, { status: newStatus });
+      alert(`Appointment status updated to "${newStatus}"`);
+
+      // Update the local state to reflect the status change
+      const updatedAppointments = appointments.map((appointment) =>
+        appointment.id === appointmentId
+          ? { ...appointment, status: newStatus }
+          : appointment
+      );
+      setAppointments(updatedAppointments);
+    } catch (err) {
+      console.error("Error updating appointment status:", err.message);
+      alert("Failed to update appointment status.");
+    } finally {
+      setLoading(false); // Stop loading
+    }
   };
 
   return (
     <div style={{ padding: "20px" }}>
       <h2>Doctor Dashboard</h2>
+
+      {/* Loading Feedback */}
+      {loading && <p>Loading data, please wait...</p>}
 
       {/* Appointment List */}
       <div>
@@ -70,6 +99,7 @@ function DoctorDashboard() {
                 <strong>Patient Name:</strong> {appointment.name} <br />
                 <strong>Date:</strong> {appointment.date} <br />
                 <strong>Time:</strong> {appointment.time} <br />
+                <strong>Status:</strong> {appointment.status} <br />
                 <button
                   onClick={() => handlePatientSelection(appointment.userId)}
                   style={{
@@ -83,6 +113,36 @@ function DoctorDashboard() {
                 >
                   View Patient Details
                 </button>
+                {appointment.status === "Pending" && (
+                  <button
+                    onClick={() => updateAppointmentStatus(appointment.id, "Confirmed")}
+                    style={{
+                      marginLeft: "10px",
+                      padding: "5px 10px",
+                      backgroundColor: "green",
+                      color: "white",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Confirm
+                  </button>
+                )}
+                {appointment.status === "Confirmed" && (
+                  <button
+                    onClick={() => updateAppointmentStatus(appointment.id, "Completed")}
+                    style={{
+                      marginLeft: "10px",
+                      padding: "5px 10px",
+                      backgroundColor: "gray",
+                      color: "white",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Mark as Completed
+                  </button>
+                )}
               </li>
             ))}
           </ul>
