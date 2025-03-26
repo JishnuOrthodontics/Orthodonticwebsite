@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase-config"; // Firebase configuration
 import emailjs from "@emailjs/browser"; // EmailJS integration
+import { TextField, Button, CircularProgress, Typography, Box } from "@mui/material";
 
 function ContactForm() {
   const [name, setName] = useState(""); // State for user's name
@@ -46,48 +47,65 @@ function ContactForm() {
   };
 
   return (
-    <div>
-      <h2>Contact Us</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error messages */}
-      <form ref={form} onSubmit={handleSubmit}>
-        {/* Name Field */}
-        <input
-          type="text"
-          name="user_name"
-          placeholder="Your Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <br />
-
-        {/* Email Field */}
-        <input
-          type="email"
-          name="user_email"
-          placeholder="Your Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <br />
-
-        {/* Message Field */}
-        <textarea
-          name="message"
-          placeholder="Your Message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          required
-        ></textarea>
-        <br />
-
-        {/* Submit Button */}
-        <button type="submit" disabled={loading}>
-          {loading ? "Sending..." : "Send"}
-        </button>
-      </form>
-    </div>
+    <Box
+      component="form"
+      ref={form}
+      onSubmit={handleSubmit}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
+      <Typography variant="h6" gutterBottom>
+        Contact Us
+      </Typography>
+      {error && (
+        <Typography variant="body2" color="error">
+          {error}
+        </Typography>
+      )}
+      {/* Name Field */}
+      <TextField
+        label="Your Name"
+        name="user_name"
+        variant="outlined"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+      />
+      {/* Email Field */}
+      <TextField
+        label="Your Email"
+        name="user_email"
+        type="email"
+        variant="outlined"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+      {/* Message Field */}
+      <TextField
+        label="Your Message"
+        name="message"
+        variant="outlined"
+        multiline
+        rows={4}
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        required
+      />
+      {/* Submit Button */}
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        disabled={loading}
+        sx={{ alignSelf: "flex-start" }}
+      >
+        {loading ? <CircularProgress size={24} /> : "Send"}
+      </Button>
+    </Box>
   );
 }
 
