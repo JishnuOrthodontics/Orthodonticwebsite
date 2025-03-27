@@ -1,5 +1,9 @@
 import React from "react";
-import { Container, Grid, Typography, Card, CardContent, TextField, Button } from "@mui/material";
+import { Container, Typography } from "@mui/material";
+import NewsSection from "./NewsSection"; // Component for latest news
+import CaseReportForm from "./CaseReportForm"; // Component to submit case reports
+import CaseReportLibrary from "./CaseReportLibrary"; // Component to view case reports
+import SearchBar from "./SearchBar"; // Component for the search engine
 
 function DoctorsEducationPortal() {
   return (
@@ -16,76 +20,30 @@ function DoctorsEducationPortal() {
         }}
       >
         <Typography variant="h3" gutterBottom>
-          Welcome to Doctors' Education Portal
+          Doctors' Education Portal
         </Typography>
         <Typography variant="h6">
-          Stay updated with the latest advancements in orthodontics and share your knowledge.
+          Stay informed, collaborate, and grow with the latest in orthodontic research.
         </Typography>
       </div>
 
-      {/* Latest Updates Section */}
-      <Grid container spacing={4} style={{ marginBottom: "40px" }}>
-        <Grid item xs={12} md={6}>
-          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
-            <CardContent>
-              <Typography variant="h6">Latest News</Typography>
-              <Typography variant="body2">
-                Placeholder for AI-curated orthodontic news and technological updates.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
-            <CardContent>
-              <Typography variant="h6">Featured Case Reports</Typography>
-              <Typography variant="body2">
-                Placeholder for top case reports submitted by doctors.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      {/* Search Engine */}
+      <SearchBar />
 
-      {/* Search Engine Section */}
+      {/* Latest News Section */}
+      <div style={{ marginTop: "40px", marginBottom: "40px" }}>
+        <NewsSection />
+      </div>
+
+      {/* Submit Case Reports Section */}
       <div style={{ marginBottom: "40px" }}>
-        <Typography variant="h5" gutterBottom>
-          Search Orthodontic Journals
-        </Typography>
-        <TextField
-          variant="outlined"
-          placeholder="Search by topic, author, or keyword..."
-          fullWidth
-          style={{ marginBottom: "20px" }}
-        />
-        <Button variant="contained" color="primary" fullWidth>
-          Search
-        </Button>
+        <CaseReportForm />
       </div>
 
-      {/* Articles and Contributions Section */}
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
-          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
-            <CardContent>
-              <Typography variant="h6">Your Articles</Typography>
-              <Typography variant="body2">
-                Placeholder for submitted articles by doctors. Add your contributions here.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
-            <CardContent>
-              <Typography variant="h6">Upload Case Reports</Typography>
-              <Typography variant="body2">
-                Placeholder for doctors to upload detailed case reports and share with the community.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      {/* Case Report Library */}
+      <div style={{ marginBottom: "40px" }}>
+        <CaseReportLibrary />
+      </div>
     </Container>
   );
 }

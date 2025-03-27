@@ -77,6 +77,25 @@ function Home() {
         </Grid>
       </Grid>
 
+      {/* Dealer Portal Entry Section */}
+      <div style={{ marginTop: "50px", textAlign: "center", padding: "20px", borderRadius: "15px", background: "linear-gradient(90deg, #f44336, #d32f2f)", color: "white" }}>
+        <Typography variant="h4" gutterBottom>
+          Are You a Dealer?
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          Join our network of material dealers and start selling your dental products.
+        </Typography>
+        <Button
+          variant="contained"
+          color="inherit"
+          component={Link}
+          to="/dealer"
+          style={{ marginTop: "20px" }}
+        >
+          Enter Dealer Portal
+        </Button>
+      </div>
+      
       {/* Features Highlight Section */}
       <div style={{ marginTop: "50px" }}>
         <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>

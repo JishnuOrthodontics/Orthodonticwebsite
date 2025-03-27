@@ -1,55 +1,67 @@
-import React, { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase-config";
+import fetchUserRole from "./RoleFetcher"; // Import the role fetching function
 
 function AppointmentForm() {
-  const [name, setName] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [appointments, setAppointments] = useState([]); // Stores appointments
+  const [loading, setLoading] = useState(false); // Loading indicator
+  const [error, setError] = useState(""); // Error messages
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await addDoc(collection(db, "appointments"), {
-        name,
-        date,
-        time,
-      });
-      alert("Appointment saved successfully!");
-      setName("");
-      setDate("");
-      setTime("");
-    } catch (error) {
-      console.error("Error saving appointment:", error);
-      alert("Failed to save appointment.");
-    }
-  };
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      setLoading(true); // Set loading state
+      setError(""); // Clear any previous errors
+
+      try {
+        // Step 1: Fetch user role
+        const userRole = await fetchUserRole();
+
+        // Step 2: Check if the user has the "doctor" role
+        if (userRole !== "doctor") {
+          throw new Error("Access denied: User is not a doctor.");
+        }
+
+        // Step 3: Fetch appointments from Firestore
+        const querySnapshot = await getDocs(collection(db, "appointments"));
+        const fetchedAppointments = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setAppointments(fetchedAppointments);
+      } catch (err) {
+        // Handle errors during role verification or Firestore access
+        console.error("Error fetching appointments:", err.message);
+        setError(err.message);
+      } finally {
+        setLoading(false); // Reset loading state
+      }
+    };
+
+    fetchAppointments(); // Execute the fetch logic
+  }, []);
 
   return (
-    <div>
-      <h2>Schedule an Appointment</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Your Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <br />
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
-        <br />
-        <input
-          type="time"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-        />
-        <br />
-        <button type="submit">Save Appointment</button>
-      </form>
+    <div style={{ padding: "20px" }}>
+      <h2>Your Appointments</h2>
+      {/* Loading Indicator */}
+      {loading && <p>Loading...</p>}
+
+      {/* Error Display */}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {/* Appointments List */}
+      {appointments.length > 0 ? (
+        appointments.map((appointment) => (
+          <div key={appointment.id} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
+            <p><strong>Patient:</strong> {appointment.name}</p>
+            <p><strong>Date:</strong> {appointment.date}</p>
+            <p><strong>Status:</strong> {appointment.status}</p>
+          </div>
+        ))
+      ) : (
+        <p>No appointments found.</p>
+      )}
     </div>
   );
 }

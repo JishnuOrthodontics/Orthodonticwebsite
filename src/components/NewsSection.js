@@ -1,64 +1,58 @@
 import React, { useState, useEffect } from "react";
-import { Container, Grid, Card, CardContent, Typography, Button } from "@mui/material";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase-config";
 
 function NewsSection() {
   const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false); // Track loading state
+  const [error, setError] = useState(""); // Track error messages
 
   useEffect(() => {
-    // Fetch articles from the database (mocked for now)
-    const fetchedArticles = [
-      {
-        title: "Advances in Clear Aligners Technology",
-        summary: "This article explores the latest advancements in clear aligners, focusing on improved materials and treatment efficiency.",
-        source: "Orthodontic Journal",
-        link: "https://example.com/clear-aligners",
-        date: "2023-12-15",
-      },
-      {
-        title: "New Approaches in Jaw Correction Surgery",
-        summary: "A groundbreaking technique for jaw correction surgery has been developed, reducing recovery time by 50%.",
-        source: "Dental Research Weekly",
-        link: "https://example.com/jaw-correction",
-        date: "2023-12-10",
-      },
-    ];
-    setArticles(fetchedArticles);
+    const fetchArticles = async () => {
+      setLoading(true); // Set loading to true when fetching starts
+      setError(""); // Clear any previous errors
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "articles"));
+        const fetchedArticles = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setArticles(fetchedArticles);
+      } catch (err) {
+        console.error("Error fetching articles:", err.message);
+        setError("Failed to load articles. Please try again later."); // Set error message
+      } finally {
+        setLoading(false); // Reset loading state
+      }
+    };
+
+    fetchArticles();
   }, []);
 
   return (
-    <Container maxWidth="lg" style={{ marginTop: "40px" }}>
-      <Typography variant="h4" gutterBottom>
-        Latest News & Updates
-      </Typography>
-      <Grid container spacing={4}>
-        {articles.map((article, index) => (
-          <Grid item xs={12} md={6} key={index}>
-            <Card style={{ borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {article.title}
-                </Typography>
-                <Typography variant="body2" style={{ marginBottom: "10px" }}>
-                  {article.summary}
-                </Typography>
-                <Typography variant="caption" display="block" gutterBottom>
-                  Source: {article.source} | Published: {article.date}
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  href={article.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Read More
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+    <div style={{ padding: "20px" }}>
+      <h2>Latest News</h2>
+
+      {/* Display loading state */}
+      {loading && <p>Loading articles...</p>}
+
+      {/* Display error message */}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {/* Display articles if loading is complete and no error */}
+      {!loading && !error && articles.length > 0 ? (
+        articles.map((article) => (
+          <div key={article.id} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
+            <p><strong>Title:</strong> {article.title}</p>
+            <p><strong>Summary:</strong> {article.summary}</p>
+            <p><strong>Source:</strong> {article.source}</p>
+          </div>
+        ))
+      ) : (
+        !loading && !error && <p>No articles available.</p>
+      )}
+    </div>
   );
 }
 

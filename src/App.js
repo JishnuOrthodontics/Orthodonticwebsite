@@ -13,6 +13,7 @@ import DoctorDashboard from "./components/DoctorDashboard";
 import PatientDashboard from "./components/PatientDashboard";
 import MedicalHistory from "./components/MedicalHistory";
 import FeaturesPage from "./components/FeaturesPage";
+import DealersPortal from "./components/DealerPortal"; // Import DealerPortal Component
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -87,6 +88,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/medical-history" element={<MedicalHistory />} />
         <Route path="/features" element={<FeaturesPage />} />
+        {/* Add Dealer Portal route */}
+        <Route path="/dealer" element={<DealersPortal />} />
         {/* Role-Based Routes */}
         <Route
           path="/doctor-dashboard"
