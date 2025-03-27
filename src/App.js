@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { auth, db } from "./firebase-config";
-import { onAuthStateChanged, signOut } from "firebase/auth"; // For authentication
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import Header from "./components/Header"; // Navigation menu
+import Header from "./components/Header";
 import Home from "./components/Home";
 import About from "./components/About";
 import Contact from "./components/Contact";
@@ -13,27 +13,28 @@ import DoctorDashboard from "./components/DoctorDashboard";
 import PatientDashboard from "./components/PatientDashboard";
 import MedicalHistory from "./components/MedicalHistory";
 import FeaturesPage from "./components/FeaturesPage";
-import DealersPortal from "./components/DealerPortal"; // Import DealerPortal Component
-import ProtectedRoute from "./components/ProtectedRoute";
+import DealerPortal from "./components/DealerPortal"; // Dealer Portal
+import DealerLogin from "./components/DealerLogin"; // Dealer Login
+import DealerRegister from "./components/DealerRegister"; // Dealer Registration
+import ProtectedRoute from "./components/ProtectedRoute"; // Existing ProtectedRoute logic
 
 function App() {
   const [user, setUser] = useState(null); // Current authenticated user
-  const [role, setRole] = useState(null); // Role (doctor or patient)
-  const [loading, setLoading] = useState(true); // Loading state while fetching data
+  const [role, setRole] = useState(null); // User's role (doctor, patient, dealer)
+  const [loading, setLoading] = useState(true); // Loading state while fetching user data
   const [error, setError] = useState(null); // Error state for role fetching
 
-  // Monitor authentication state and fetch user role
+  // Monitor authentication state and fetch role from Firestore
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setLoading(true);
-      setError(null); // Clear any previous error
+      setError(null); // Reset error state
 
       if (currentUser) {
         setUser(currentUser);
 
         try {
-          // Fetch user role from Firestore
-          const docRef = doc(db, "users", currentUser.uid);
+          const docRef = doc(db, "users", currentUser.uid); // Reference user document in Firestore
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
@@ -54,7 +55,7 @@ function App() {
       setLoading(false); // Stop loading once data is fetched
     });
 
-    return unsubscribe; // Cleanup on component unmount
+    return unsubscribe; // Cleanup listener on component unmount
   }, []);
 
   // Logout function
@@ -69,7 +70,7 @@ function App() {
   };
 
   if (loading) {
-    return <p>Loading...</p>; // Show loading message while fetching user info
+    return <p>Loading...</p>; // Show loading state while fetching user info
   }
 
   if (error) {
@@ -88,21 +89,36 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/medical-history" element={<MedicalHistory />} />
         <Route path="/features" element={<FeaturesPage />} />
-        {/* Add Dealer Portal route */}
-        <Route path="/dealer" element={<DealersPortal />} />
-        {/* Role-Based Routes */}
+
+        {/* Dealer Authentication Routes */}
+        <Route path="/dealer/login" element={<DealerLogin />} />
+        <Route path="/dealer/register" element={<DealerRegister />} />
+
+        {/* Protected Dealer Portal */}
+        <Route
+          path="/dealer"
+          element={
+            <ProtectedRoute userRole={role} roleRequired="dealer">
+              <DealerPortal />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protected Doctor Dashboard */}
         <Route
           path="/doctor-dashboard"
           element={
-            <ProtectedRoute role="doctor" userRole={role}>
+            <ProtectedRoute userRole={role} roleRequired="doctor">
               <DoctorDashboard />
             </ProtectedRoute>
           }
         />
+
+        {/* Protected Patient Dashboard */}
         <Route
           path="/patient-dashboard"
           element={
-            <ProtectedRoute role="patient" userRole={role}>
+            <ProtectedRoute userRole={role} roleRequired="patient">
               <PatientDashboard />
             </ProtectedRoute>
           }
